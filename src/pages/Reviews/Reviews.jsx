@@ -5,13 +5,14 @@ import { getMovieReviews } from 'components/services/api';
 const Reviews = () => {
   const { movieId } = useParams();
   const [reviews, getReviews] = useState([]);
+
   useEffect(() => {
     (async () => {
       const reviews = await getMovieReviews(Number(movieId));
       getReviews(reviews);
     })();
   }, [movieId]);
-  return (
+  return reviews.length > 1 ? (
     <div>
       <ul>
         {reviews.map(({ id, author, content }) => (
@@ -22,6 +23,8 @@ const Reviews = () => {
         ))}
       </ul>
     </div>
+  ) : (
+    <span>We don't have any reviews for this movie</span>
   );
 };
 export default Reviews;

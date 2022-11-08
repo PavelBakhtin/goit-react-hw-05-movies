@@ -1,5 +1,4 @@
-import { useState, useEffect } from 'react';
-import * as React from 'react';
+import { useState, useEffect, Suspense } from 'react';
 import { Link, Outlet, useParams, useLocation } from 'react-router-dom';
 import { getMovieDetails } from 'components/services/api';
 import { FlexContainer, InfoContainer, BackLink } from './MovieDetails.styled';
@@ -7,9 +6,17 @@ import { AiOutlineArrowLeft } from 'react-icons/ai';
 const MovieDetails = () => {
   const [movie, setMovie] = useState('');
   const [movieGenres, setMovieGenres] = useState([]);
+  const [savedLocation, setSavedLocation] = useState(null);
   const { movieId } = useParams();
   const location = useLocation();
-  const backLinkHref = location.state?.from ?? '/';
+
+  useEffect(() => {
+    if (savedLocation) {
+      return;
+    }
+    const backLinkHref = location.state?.from ?? '/';
+    setSavedLocation(backLinkHref);
+  }, [location.state?.from, savedLocation]);
   useEffect(() => {
     (async () => {
       try {
@@ -25,7 +32,7 @@ const MovieDetails = () => {
 
   return (
     <div>
-      <BackLink to={backLinkHref}>
+      <BackLink to={savedLocation}>
         <AiOutlineArrowLeft size="15" />
         <span>Go back</span>
       </BackLink>
@@ -61,7 +68,9 @@ const MovieDetails = () => {
           </li>
         </ul>
       </InfoContainer>
-      <Outlet />
+      <Suspense fallback={<div>Loading...</div>}>
+        <Outlet />
+      </Suspense>
     </div>
   );
 };
