@@ -1,8 +1,9 @@
 import { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { getTrendingMovies } from 'components/services/api';
 
 const Home = () => {
+  const location = useLocation();
   const [trendingMovies, setTrendingMovies] = useState([]);
   useEffect(() => {
     (async () => {
@@ -13,7 +14,7 @@ const Home = () => {
         console.log(error);
       }
     })();
-  });
+  }, []);
   return (
     <div>
       <h1>Trending today</h1>
@@ -21,7 +22,9 @@ const Home = () => {
         {trendingMovies.map(movie => {
           return (
             <li key={movie.id}>
-              <Link to={`/movies/${movie.id}`}>{movie.title}</Link>
+              <Link to={`/movies/${movie.id}`} state={{ from: location }}>
+                {movie.title}
+              </Link>
             </li>
           );
         })}
