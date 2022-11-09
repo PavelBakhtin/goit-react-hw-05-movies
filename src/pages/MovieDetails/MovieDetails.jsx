@@ -27,7 +27,7 @@ const MovieDetails = () => {
     })();
   }, [movieId]);
   const { title, poster_path, overview, vote_average, release_date } = movie;
-  const releaseYear = new Date().getFullYear(release_date);
+  const releaseYear = Date().getFullYear(release_date);
   const userScore = Number(vote_average).toFixed() * 10;
 
   return (
